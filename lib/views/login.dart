@@ -1,6 +1,7 @@
-import 'dart:developer';
+import 'package:eight_news/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:eight_news/routes/route_name.dart';
 import 'utils/helper.dart';
 import 'utils/form_validator.dart';
@@ -16,22 +17,67 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
+//fungsi untuk login
 class _LoginState extends State<Login> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  bool isObscure = true;
-  bool rememberMe = false;
+  final TextEditingController _emailController = TextEditingController(
+    text: 'news@itg.ac.id',
+  ); // Default for testing
+  final TextEditingController _passwordController = TextEditingController(
+    text: 'ITG#news',
+  ); // Default for testing
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isObscure = true;
+  bool _rememberMe = false;
+  bool _isLoading = false;
+
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await Provider.of<AuthService>(
+        context,
+        listen: false,
+      ).login(_emailController.text.trim(), _passwordController.text.trim());
+
+      if (mounted) {
+        context.goNamed(RouteNames.main);
+      }
+    } catch (error) {
+      showDialog(
+        context: context,
+        builder:
+            (ctx) => AlertDialog(
+              title: const Text('Login Gagal'),
+              content: Text(error.toString()),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            ),
+      );
+    }
+
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: cBg, // Dark background
+      backgroundColor: cBg,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Form(
-            key: formKey,
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -39,7 +85,7 @@ class _LoginState extends State<Login> {
                   textOne: 'Hello',
                   textStyleOne: headline1.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: cWhite,
                   ),
                   textTwo: '\nAgain!',
                   textStyleTwo: headline1.copyWith(
@@ -59,12 +105,11 @@ class _LoginState extends State<Login> {
                   textStyleOne: subtitle2.copyWith(color: cTextGrey),
                   textStyleTwo: subtitle2.copyWith(color: cPrimary),
                 ),
-
                 vsSuperTiny,
                 CustomFormField(
-                  controller: usernameController,
+                  controller: _emailController,
                   hintText: 'Username',
-                  keyboardType: TextInputType.name,
+                  keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   validator:
                       (value) =>
@@ -77,18 +122,21 @@ class _LoginState extends State<Login> {
                   textStyleOne: subtitle2.copyWith(color: cTextGrey),
                   textStyleTwo: subtitle2.copyWith(color: cPrimary),
                 ),
-
                 vsSuperTiny,
                 CustomFormField(
-                  controller: passwordController,
+                  controller: _passwordController,
                   hintText: 'Password',
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.done,
-                  obscureText: isObscure,
+                  obscureText: _isObscure,
                   suffixIcon: IconButton(
-                    onPressed: togglePasswordVisibility,
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    },
                     icon: Icon(
-                      isObscure
+                      _isObscure
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
                       color: Colors.grey,
@@ -100,11 +148,11 @@ class _LoginState extends State<Login> {
                 Row(
                   children: [
                     Checkbox(
-                      value: rememberMe,
+                      value: _rememberMe,
                       activeColor: cPrimary,
                       onChanged: (value) {
                         setState(() {
-                          rememberMe = value!;
+                          _rememberMe = value!;
                         });
                       },
                     ),
@@ -112,31 +160,17 @@ class _LoginState extends State<Login> {
                       'Remember me',
                       style: subtitle2.copyWith(color: Colors.white),
                     ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () => log('Forgot Password tapped'),
-                      child: Text(
-                        'Forgot the password ?',
-                        style: subtitle2.copyWith(color: cPrimary),
-                      ),
-                    ),
+                    const Spacer(),
                   ],
                 ),
                 vsMedium,
-                PrimaryButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      log('Login pressed');
-                      context.goNamed(RouteNames.main);
-                    }
-                  },
-                  title: 'Login',
-                ),
-                vsSmall,
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : PrimaryButton(onPressed: _handleLogin, title: 'Login'),
                 vsSmall,
                 Center(
                   child: RichTextWidget(
-                    textOne: "don't have an account ? ",
+                    textOne: "Don't have an account? ",
                     textStyleOne: subtitle2.copyWith(color: Colors.white),
                     textTwo: 'Sign Up',
                     textStyleTwo: subtitle2.copyWith(color: cPrimary),
@@ -150,16 +184,10 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void togglePasswordVisibility() {
-    setState(() {
-      isObscure = !isObscure;
-    });
-  }
-
   @override
   void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 }

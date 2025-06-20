@@ -2,21 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 //warna
-Color cPrimary = const Color.fromARGB(255, 19, 7, 255);
-Color cBg = const Color.fromARGB(255, 40, 39, 39);
-Color cTextGrey = const Color.fromARGB(255, 128, 128, 128);
+Color cPrimary = const Color.fromARGB(255, 24, 119, 242);
+Color cBg = const Color.fromARGB(255, 28, 30, 33);
+Color cTextGrey = const Color.fromARGB(255, 170, 173, 177);
+Color cTextGreyLight = const Color.fromARGB(255, 214, 213, 213);
 Color cBlack = const Color.fromARGB(255, 0, 0, 0);
 Color cWhite = const Color.fromARGB(255, 255, 255, 255);
 Color cError = const Color.fromARGB(255, 255, 0, 0);
-Color cLinear = const Color.fromARGB(255, 49, 110, 189);
-
-const Widget hsSuperTiny = SizedBox(width: 4.0);
-const Widget hsTiny = SizedBox(width: 8.0);
-const Widget hsSmall = SizedBox(width: 12.0);
-const Widget hsMedium = SizedBox(width: 16.0);
-const Widget hsLarge = SizedBox(width: 24.0);
-const Widget hsXLarge = SizedBox(width: 36.0);
-const Widget hsMassive = SizedBox(width: 120.0);
+Color cLinear = const Color.fromARGB(255, 50, 108, 184);
+Color cBox = const Color.fromARGB(255, 80, 83, 87);
 
 const Widget vsSuperTiny = SizedBox(height: 4.0);
 const Widget vsTiny = SizedBox(height: 8.0);
