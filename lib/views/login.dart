@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
                   textOne: 'Hello',
                   textStyleOne: headline1.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: cWhite,
                   ),
                   textTwo: '\nAgain!',
                   textStyleTwo: headline1.copyWith(
@@ -126,7 +126,6 @@ class _LoginState extends State<Login> {
                 PrimaryButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      log('Login pressed');
                       context.goNamed(RouteNames.main);
                     }
                   },

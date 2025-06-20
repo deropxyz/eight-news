@@ -4,6 +4,7 @@ import 'package:eight_news/views/splash.dart';
 import 'package:eight_news/views/intro.dart';
 import 'package:eight_news/views/login.dart';
 import 'package:eight_news/views/register.dart';
+import 'package:eight_news/views/main.dart';
 import 'route_name.dart';
 
 class AppRouter {
@@ -45,6 +46,11 @@ class AppRouter {
               pageBuilder: (_, __) => MaterialPage(child: Register()),
             ),
           ],
+        ),
+        GoRoute(
+          path: '/main',
+          name: RouteNames.main,
+          pageBuilder: (context, state) => MaterialPage(child: Main()),
         ),
       ],
     );
