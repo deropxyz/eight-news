@@ -1,6 +1,10 @@
 # eight_news
 
-A new Flutter project.
+Anggota :
+
+Aropi Sastra Kusumah 2206012
+Kevin Gibran 2206015
+Melina Amelia 2206152
 
 ## Getting Started
 
